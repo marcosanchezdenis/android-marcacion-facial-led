@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Sistema de marcación</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="title_activity_detect_over_lay">DetectOverLay</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_news">News</string>
+    <string name="confirmacion">Confirmación de Marcación</string>
+    <string name="es_usted">Es usted?</string>
+    <string name="entrada">ENTRADA</string>
+    <string name="salida">SALIDA</string>
+    <string name="confirmation_ok">OK</string>
+    <string name="header_username"></string>
+    <string name="header_email"></string>
+    <string name="cancelar">Cancelar</string>
+    <string name="finalizar">Finalizar</string>
+    <string name="capturar">Capturar</string>
+    <string name="foto_message_ok">Las fotografías del usuario han sido eliminadas correctamente.</string>
+    <string name="foto_title">Eliminar cuenta de usuario</string>
+    <string name="foto_confirm">Confirma que desea eliminar las fotografias del usuario:</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_main3">Main3Activity</string>
+
+</resources>

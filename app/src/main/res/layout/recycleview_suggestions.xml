@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+
+    android:layout_height="wrap_content"
+    android:background="#e5edff"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:id="@+id/recyclerViewFrame"
+    android:padding="20dp">
+
+
+
+    <TextView android:id="@+id/txt_people"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000"
+        android:textSize="35dp"
+
+        />
+
+
+
+
+</LinearLayout>

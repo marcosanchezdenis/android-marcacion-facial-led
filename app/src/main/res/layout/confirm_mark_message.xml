@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bienvenido al DEI-LED"
+        android:textSize="35dp"
+        android:id="@+id/confirm_mark_message_title"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="28dp"
+        android:text="Su marcación de ENTRADA ha sido registrada. Les deseamos una excelente jornada. "
+        android:id="@+id/confirm_mark_message_body"/>
+
+    <Button android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:textSize="28dp"
+        android:id="@+id/confirm_mark_message_ok"
+        android:text="@string/confirmation_ok">
+
+    </Button>
+
+</LinearLayout>
