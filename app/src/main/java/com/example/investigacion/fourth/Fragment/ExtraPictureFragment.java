@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.investigacion.fourth.CameraPreview;
+import com.example.investigacion.fourth.MainActivity;
 import com.example.investigacion.fourth.R;
 import com.example.investigacion.fourth.adapter.RecycleViewFivePictures;
 import com.example.investigacion.fourth.helper.Messages;
@@ -45,6 +46,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -96,6 +98,7 @@ public class ExtraPictureFragment extends Fragment implements CameraPreview.Mark
     private OkHttpClient client;
     private WebSocket ws;
     private TextView picture_count_textview;
+    private String cookie;
 
     public ExtraPictureFragment() {
         // Required empty public constructor
@@ -119,6 +122,13 @@ public class ExtraPictureFragment extends Fragment implements CameraPreview.Mark
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+        try {
+            cookie =  new MainActivity.ReturnCookieSession("http://10.10.25.9:8888/users/login","username=admin&password=mandrake2505").execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
     }
 
@@ -221,7 +231,7 @@ public class ExtraPictureFragment extends Fragment implements CameraPreview.Mark
             // Can be safely ignored because UTF-8 is always supported
         }
 
-        new ComRequest.post().execute("http://10.10.25.9:8888/users/name", "user="+person.data+"&name="+encodedName);
+        new ComRequest.post().execute("http://10.10.25.9:8888/users/name",cookie, "user="+person.data+"&name="+encodedName);
 
 
 
@@ -249,7 +259,7 @@ public class ExtraPictureFragment extends Fragment implements CameraPreview.Mark
 
         }
 
-        new ComRequest.post().execute("http://10.10.25.9:8888/train","");
+        new ComRequest.post().execute("http://10.10.25.9:8888/train",cookie,"");
 
     }
 

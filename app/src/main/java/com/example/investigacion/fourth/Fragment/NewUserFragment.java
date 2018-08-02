@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.investigacion.fourth.MainActivity;
 import com.example.investigacion.fourth.R;
 import com.example.investigacion.fourth.adapter.RecycleViewLastUsers;
 import com.example.investigacion.fourth.adapter.RecycleViewSuggestions;
@@ -65,6 +66,7 @@ public class NewUserFragment extends Fragment {
     private RecycleViewSuggestions mAdapter;
     private Suggestions p  = new Suggestions();
     private OnHeadlineSelectedListener mCallback;
+    private String cookie;
 
 
     public NewUserFragment() {
@@ -96,6 +98,14 @@ public class NewUserFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        try {
+            cookie =  new MainActivity.ReturnCookieSession("http://10.10.25.9:8888/users/login","password=mandrake2505&username=admin").execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        Log.i("text-cookie",cookie);
     }
 
     @Override
@@ -112,7 +122,7 @@ public class NewUserFragment extends Fragment {
 
 
 
-        p = (Suggestions)ClassJSONParser.json2obj("http://10.10.25.9:8888/users/filter", Suggestions.class);
+        p = (Suggestions)ClassJSONParser.json2obj("http://10.10.25.9:8888/users/filter",cookie, Suggestions.class);
 
 
 
@@ -131,7 +141,7 @@ public class NewUserFragment extends Fragment {
              public void afterTextChanged(Editable editable) {
 
 
-                 p = (Suggestions)ClassJSONParser.json2obj("http://10.10.25.9:8888/users/filter?query="+ editable.toString(),Suggestions.class);
+                 p = (Suggestions)ClassJSONParser.json2obj("http://10.10.25.9:8888/users/filter?query="+ editable.toString(),cookie,Suggestions.class);
 
                  mAdapter.swap(p.suggestions);
 

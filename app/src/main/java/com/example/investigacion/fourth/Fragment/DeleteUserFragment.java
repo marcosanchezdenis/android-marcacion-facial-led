@@ -56,6 +56,7 @@ public class DeleteUserFragment extends Fragment {
     private RecyclerView rv_list_employee;
     private Suggestions p;
     private RecycleViewSuggestions mAdapter;
+    private String cookie;
 
 
     public DeleteUserFragment() {
@@ -87,6 +88,13 @@ public class DeleteUserFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        try {
+            cookie =  new MainActivity.ReturnCookieSession("http://10.10.25.9:8888/users/login","username=admin&password=mandrake2505").execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -109,7 +117,7 @@ public class DeleteUserFragment extends Fragment {
 
 
 
-        p = (Suggestions)ClassJSONParser.json2obj("http://10.10.25.9:8888/users/filter",Suggestions.class);
+        p = (Suggestions)ClassJSONParser.json2obj("http://10.10.25.9:8888/users/filter",cookie,Suggestions.class);
 
 
 
@@ -132,7 +140,7 @@ public class DeleteUserFragment extends Fragment {
             public void afterTextChanged(Editable editable) {
 
 
-                p = (Suggestions)ClassJSONParser.json2obj("http://10.10.25.9:8888/users/filter?query="+ editable.toString(),Suggestions.class);
+                p = (Suggestions)ClassJSONParser.json2obj("http://10.10.25.9:8888/users/filter?query="+ editable.toString(),cookie,Suggestions.class);
 
                 mAdapter.swap(p.suggestions);
 

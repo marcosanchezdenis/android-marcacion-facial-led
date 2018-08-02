@@ -172,7 +172,7 @@ public class CameraFragment extends Fragment implements CameraPreview.MarkFaceDe
         //todo verificar respuesta de conexiones
         try {
             // todo spot necesita hacer un request get y returna el JSON
-            jsonresponse = new ComRequest.get().execute("http://10.10.25.1/personal/wslistmarcacion.php").get();
+            jsonresponse = new ComRequest.get().execute("http://10.10.25.1/personal/wslistmarcacion.php",null).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

@@ -54,6 +54,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -83,6 +84,7 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
     private CameraPreview mPreview;
     private Button captureButton;
     private Boolean busy;
+    private String cookie;
 
 
 
@@ -136,6 +138,13 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        try {
+            cookie =  new MainActivity.ReturnCookieSession("http://10.10.25.9:8888/users/login","username=admin&password=mandrake2505").execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -145,7 +154,7 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
 
         // inicializacion de conexiones - socket - request- client -
         client = new OkHttpClient();
-        request = new Request.Builder().url("ws://10.10.25.9:8888/uploadphoto").addHeader("Cookie", "userid=\"2|1:0|10:1530135750|6:userid|4:MQ==|9f33b80bb688cc0230a8c43dcf212c89df9c18997b284e49d20727afcf89f28b\"; user=\"2|1:0|10:1530138580|4:user|12:TVNBTkNIRVo=|3eda4e2e45a55956416a77c3dae956b6b72b4663ae6ff115648b96fbabebe1cd\"; name=\"2|1:0|10:1530138580|4:name|20:TWFyY28gU2FuY2hleg==|7c59add4e8ed9f0acd94374af68ba7f86ab2a344026ffc8a5bf0a92faec3c5f8\"").build();
+        request = new Request.Builder().url("ws://10.10.25.9:8888/uploadphoto").addHeader("Cookie", cookie).build();
         EchoWebSocketListener listener = new EchoWebSocketListener(){
             @Override
             public void onMessage(WebSocket webSocket, String text) {
@@ -232,7 +241,7 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
             // Can be safely ignored because UTF-8 is always supported
         }
 
-        new ComRequest.post().execute("http://10.10.25.9:8888/users/name", "user="+person.data+"&name="+encodedName);
+        new ComRequest.post().execute("http://10.10.25.9:8888/users/name",cookie, "user="+person.data+"&name="+encodedName);
 
 
         busy =false;
@@ -267,7 +276,7 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
              new SendPhotoTask("http://10.10.25.9:8888/users/photonumber", "photonumber=" + photonumber.toString(),ByteString.of(byteArray)).execute();
         }
 
-        new ComRequest.post().execute("http://10.10.25.9:8888/train","");
+        new ComRequest.post().execute("http://10.10.25.9:8888/train",cookie,"");
 
     }
 
@@ -386,7 +395,7 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
                 // conn.setDoOutput(true);
 
                 conn.setRequestMethod("POST");
-                conn.setRequestProperty("Cookie", "userid=\"2|1:0|10:1530135750|6:userid|4:MQ==|9f33b80bb688cc0230a8c43dcf212c89df9c18997b284e49d20727afcf89f28b\"; user=\"2|1:0|10:1530138580|4:user|12:TVNBTkNIRVo=|3eda4e2e45a55956416a77c3dae956b6b72b4663ae6ff115648b96fbabebe1cd\"; name=\"2|1:0|10:1530138580|4:name|20:TWFyY28gU2FuY2hleg==|7c59add4e8ed9f0acd94374af68ba7f86ab2a344026ffc8a5bf0a92faec3c5f8\"");
+                conn.setRequestProperty("Cookie", cookie);
 
 
                 OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());

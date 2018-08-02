@@ -48,6 +48,8 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 
@@ -267,7 +269,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        SubjectsResponse p = (SubjectsResponse) ClassJSONParser.json2obj("http://10.10.25.3/serviciosFacrec/materias2.php", SubjectsResponse.class);
+        SubjectsResponse p = (SubjectsResponse) ClassJSONParser.json2obj("http://10.10.25.3/serviciosFacrec/materias2.php",cookie, SubjectsResponse.class);
 
         LinearLayout ll_materias_container = (LinearLayout) v.findViewById(R.id.ll_materias_container);
         Button bt_continue = (Button) v.findViewById(R.id.bt_subject_continue);
@@ -451,7 +453,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private class ReturnCookieSession extends AsyncTask<Object,Integer, String> {
+    public static class ReturnCookieSession extends AsyncTask<Object,Integer, String> {
 
         String url;
         String postData;
@@ -460,7 +462,7 @@ public class MainActivity extends AppCompatActivity
         public ReturnCookieSession(Object... param) {
             this.url = (String) param[0];
             this.postData = (String) param[1];
-
+         
         }
 
         protected String doInBackground(Object... urls) {
@@ -468,10 +470,18 @@ public class MainActivity extends AppCompatActivity
             String responsetxt = null;
             try {
                 URL url = new URL(this.url);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                // conn.setDoOutput(true);
 
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+               conn.setDoOutput(true);
                 conn.setRequestMethod("POST");
+//                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//                conn.setRequestProperty("Upgrade-Insecure-Requests", "1");
+//                conn.setRequestProperty("Origin", "http://10.10.25.9:8888");
+//                conn.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36");
+//                conn.setRequestProperty("Referer", "http://10.10.25.9:8888/");
+//
+//
+//                conn.setRequestProperty("Cache-Control", "no-cache");
 
 
                 OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
@@ -480,19 +490,27 @@ public class MainActivity extends AppCompatActivity
 
                 int respCode = conn.getResponseCode();  // New items get NOT_FOUND on PUT
 
+                for (Map.Entry<String, List<String>> entries : conn.getHeaderFields().entrySet()) {
+                    String values = "";
+                    for (String value : entries.getValue()) {
+                        values += value + ",";
+                    }
+                    Log.d("Response", entries.getKey() + " - " +  values );
+                }
+
 
                 if (respCode == HttpURLConnection.HTTP_OK || respCode == HttpURLConnection.HTTP_NOT_FOUND) {
                     //req.setAttribute("error", "");
-                    /*StringBuffer response = new StringBuffer();
-                    String line;
-
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-                    Log.i("Request with modify",response.toString());*/
-                    responsetxt = conn.getHeaderField("Cookie");
+//                    StringBuffer response = new StringBuffer();
+//                    String line;
+//
+//                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//                    while ((line = reader.readLine()) != null) {
+//                        response.append(line);
+//                    }
+//                    reader.close();
+//                    Log.i("Request with modify",response.toString());
+                    responsetxt = conn.getHeaderField("Set-Cookie");
                 }
 
             } catch (ProtocolException e) {
@@ -516,6 +534,7 @@ public class MainActivity extends AppCompatActivity
 
         }
     }
+
 
 
 

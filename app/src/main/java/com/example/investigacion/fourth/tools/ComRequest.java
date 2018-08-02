@@ -26,7 +26,10 @@ public class ComRequest {
                 // conn.setDoOutput(true);
 
                 //conn.setRequestMethod("POST");
-                conn.setRequestProperty("Cookie", "userid=\"2|1:0|10:1530135750|6:userid|4:MQ==|9f33b80bb688cc0230a8c43dcf212c89df9c18997b284e49d20727afcf89f28b\"; user=\"2|1:0|10:1530138580|4:user|12:TVNBTkNIRVo=|3eda4e2e45a55956416a77c3dae956b6b72b4663ae6ff115648b96fbabebe1cd\"; name=\"2|1:0|10:1530138580|4:name|20:TWFyY28gU2FuY2hleg==|7c59add4e8ed9f0acd94374af68ba7f86ab2a344026ffc8a5bf0a92faec3c5f8\"");
+                if(urls[1] != null){
+                    conn.setRequestProperty("Cookie", urls[1]);
+                }
+
 
 
                 //OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
@@ -88,11 +91,12 @@ public class ComRequest {
                 // conn.setDoOutput(true);
 
                 conn.setRequestMethod("POST");
-                conn.setRequestProperty("Cookie", "userid=\"2|1:0|10:1530135750|6:userid|4:MQ==|9f33b80bb688cc0230a8c43dcf212c89df9c18997b284e49d20727afcf89f28b\"; user=\"2|1:0|10:1530138580|4:user|12:TVNBTkNIRVo=|3eda4e2e45a55956416a77c3dae956b6b72b4663ae6ff115648b96fbabebe1cd\"; name=\"2|1:0|10:1530138580|4:name|20:TWFyY28gU2FuY2hleg==|7c59add4e8ed9f0acd94374af68ba7f86ab2a344026ffc8a5bf0a92faec3c5f8\"");
-
+                if(urls[1]!=null) {
+                    conn.setRequestProperty("Cookie", urls[1]);
+                }
 
                 OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-                writer.write(urls[1]);
+                writer.write(urls[2]);
                 writer.close();
 
                 int respCode = conn.getResponseCode();  // New items get NOT_FOUND on PUT

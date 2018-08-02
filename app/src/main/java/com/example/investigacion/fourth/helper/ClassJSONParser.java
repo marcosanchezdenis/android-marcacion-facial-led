@@ -9,10 +9,10 @@ import com.google.gson.GsonBuilder;
 import java.util.concurrent.ExecutionException;
 
 public class ClassJSONParser {
-    public static Object json2obj(String url, Class typeClass){
+    public static Object json2obj(String url,String cookie, Class typeClass){
         String jsonresponse = null;
         try {
-            jsonresponse = new ComRequest.get().execute(url).get();
+            jsonresponse = new ComRequest.get().execute(url,cookie).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
 
