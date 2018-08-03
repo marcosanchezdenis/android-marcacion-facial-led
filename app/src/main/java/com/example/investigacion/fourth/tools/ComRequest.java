@@ -12,6 +12,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class ComRequest {
     public static class get extends AsyncTask<String,Integer, String> {
@@ -88,7 +91,7 @@ public class ComRequest {
             try {
                 URL url = new URL(urls[0]);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                // conn.setDoOutput(true);
+                conn.setDoOutput(true);
 
                 conn.setRequestMethod("POST");
                 if(urls[1]!=null) {
@@ -115,6 +118,23 @@ public class ComRequest {
                     Log.i("ComRequest>>post>> ",response.toString());
                     responsetxt = response.toString();
                 }
+
+                Map<String, List<String>> maps= conn.getHeaderFields();
+                if(maps.get("Set-Cookie")!= null ) {
+                    List<String> coolist = maps.get("Set-Cookie");
+
+                    Iterator<String> it = coolist.iterator();
+                    StringBuffer sbu = new StringBuffer();
+                    String[] splited;
+                    while (it.hasNext()) {
+                        splited = it.next().split(";");
+                        sbu.append(splited[0] + " ");
+                    }
+                    String cookies = sbu.toString();
+                    Log.i("Cookies-comRequest-post", cookies);
+                    return cookies;
+                }
+                return responsetxt;
 
             } catch (ProtocolException e) {
                 e.printStackTrace();

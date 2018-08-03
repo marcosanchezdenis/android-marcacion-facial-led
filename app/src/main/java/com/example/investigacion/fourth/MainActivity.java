@@ -28,15 +28,12 @@ import com.example.investigacion.fourth.Fragment.ExtraFragment;
 import com.example.investigacion.fourth.Fragment.ExtraPictureFragment;
 import com.example.investigacion.fourth.Fragment.NewUserFragment;
 import com.example.investigacion.fourth.Fragment.NewUserPictureFragment;
-import com.example.investigacion.fourth.Fragment.SubjectFragment;
 import com.example.investigacion.fourth.helper.ClassJSONParser;
 import com.example.investigacion.fourth.model.FaceResponse;
 import com.example.investigacion.fourth.model.Subjects;
 import com.example.investigacion.fourth.model.SubjectsResponse;
 import com.example.investigacion.fourth.model.Suggestions;
 import com.example.investigacion.fourth.tools.ComRequest;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -207,9 +204,10 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void openTakePictureFragment(Suggestions.UserCode person){
+    public void openTakePictureFragment(Suggestions.UserCode person,String cookie){
         NewUserPictureFragment newFragment = new NewUserPictureFragment();
         newFragment.person = person;
+        newFragment.cookie= cookie;
         /*Bundle args = new Bundle();
         newFragment.setArguments(args);*/
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -442,8 +440,8 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public void openFivePicture(Suggestions.UserCode person) {
-        openTakePictureFragment(person);
+    public void openFivePicture(Suggestions.UserCode person, String cookie) {
+        openTakePictureFragment(person,cookie);
 
     }
 
@@ -462,7 +460,7 @@ public class MainActivity extends AppCompatActivity
         public ReturnCookieSession(Object... param) {
             this.url = (String) param[0];
             this.postData = (String) param[1];
-         
+
         }
 
         protected String doInBackground(Object... urls) {
@@ -470,11 +468,13 @@ public class MainActivity extends AppCompatActivity
             String responsetxt = null;
             try {
                 URL url = new URL(this.url);
-
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-               conn.setDoOutput(true);
+                conn.setDoOutput(true);
                 conn.setRequestMethod("POST");
-//                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.setRequestProperty("Content-Length", "36");
+                conn.setInstanceFollowRedirects(false);
+
 //                conn.setRequestProperty("Upgrade-Insecure-Requests", "1");
 //                conn.setRequestProperty("Origin", "http://10.10.25.9:8888");
 //                conn.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36");
@@ -498,19 +498,24 @@ public class MainActivity extends AppCompatActivity
                     Log.d("Response", entries.getKey() + " - " +  values );
                 }
 
+                boolean redirect = false;
+                if (respCode == HttpURLConnection.HTTP_OK || respCode == HttpURLConnection.HTTP_NOT_FOUND || respCode == HttpURLConnection.HTTP_MOVED_TEMP
+                        || respCode == HttpURLConnection.HTTP_MOVED_PERM
+                        || respCode == HttpURLConnection.HTTP_SEE_OTHER) {
 
-                if (respCode == HttpURLConnection.HTTP_OK || respCode == HttpURLConnection.HTTP_NOT_FOUND) {
+
                     //req.setAttribute("error", "");
-//                    StringBuffer response = new StringBuffer();
-//                    String line;
-//
-//                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//                    while ((line = reader.readLine()) != null) {
-//                        response.append(line);
-//                    }
-//                    reader.close();
-//                    Log.i("Request with modify",response.toString());
-                    responsetxt = conn.getHeaderField("Set-Cookie");
+                    StringBuffer response = new StringBuffer();
+                    String line;
+
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+                    Log.i("Request with modify",response.toString());
+                   String[] splited = conn.getHeaderField("Set-Cookie").split(";");
+                   return splited[0];
                 }
 
             } catch (ProtocolException e) {

@@ -84,7 +84,6 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
     private CameraPreview mPreview;
     private Button captureButton;
     private Boolean busy;
-    private String cookie;
 
 
 
@@ -108,6 +107,7 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
     private OkHttpClient client;
     private WebSocket ws;
     private TextView picture_count_textview;
+    public String cookie;
 
     public NewUserPictureFragment() {
         // Required empty public constructor
@@ -138,13 +138,13 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        try {
+       /* try {
             cookie =  new MainActivity.ReturnCookieSession("http://10.10.25.9:8888/users/login","username=admin&password=mandrake2505").execute().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @Override
@@ -152,18 +152,7 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
 
 
 
-        // inicializacion de conexiones - socket - request- client -
-        client = new OkHttpClient();
-        request = new Request.Builder().url("ws://10.10.25.9:8888/uploadphoto").addHeader("Cookie", cookie).build();
-        EchoWebSocketListener listener = new EchoWebSocketListener(){
-            @Override
-            public void onMessage(WebSocket webSocket, String text) {
-                Log.i("WebSocket-addPhoto",text);
-                busy = false;
-            }
-        };
-        ws = client.newWebSocket(request, listener);
-        client.dispatcher().executorService().shutdown();
+
 
 
 
@@ -222,7 +211,7 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
         progress.setProgress(0);
 
 
-        Messages.introNewUserPicture(getActivity());
+        //Messages.introNewUserPicture(getActivity());
 
 
         return v;
@@ -240,8 +229,31 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
         } catch (UnsupportedEncodingException ignored) {
             // Can be safely ignored because UTF-8 is always supported
         }
+        String user_cookies = null ;
+        try {
+            user_cookies = new ComRequest.post().execute("http://10.10.25.9:8888/users/name",cookie, "user="+person.data+"&name="+encodedName).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        cookie = cookie + " " + user_cookies;
 
-        new ComRequest.post().execute("http://10.10.25.9:8888/users/name",cookie, "user="+person.data+"&name="+encodedName);
+
+
+
+        // inicializacion de conexiones - socket - request- client -
+        client = new OkHttpClient();
+        request = new Request.Builder().url("ws://10.10.25.9:8888/uploadphoto").addHeader("Cookie", cookie).build();
+        EchoWebSocketListener listener = new EchoWebSocketListener(){
+            @Override
+            public void onMessage(WebSocket webSocket, String text) {
+                Log.i("WebSocket-addPhoto",text);
+                busy = false;
+            }
+        };
+        ws = client.newWebSocket(request, listener);
+        client.dispatcher().executorService().shutdown();
 
 
         busy =false;
@@ -252,7 +264,7 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
 
 
         Bitmap bmp;
-        Integer photonumber=1;
+        Integer photonumber=0;
 
 
 
@@ -267,7 +279,7 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
 
 
              photonumber++;
-            Log.i("PhotoNumber",photonumber.toString());
+
 
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -435,7 +447,6 @@ public class NewUserPictureFragment extends Fragment implements CameraPreview.Ma
 
             busy = true;
             ws.send(this.photo);
-            r1 = ws.request();
             while (busy);
 
 

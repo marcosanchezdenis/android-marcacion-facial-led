@@ -2,9 +2,6 @@ package com.example.investigacion.fourth.Fragment;
 
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -16,34 +13,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.investigacion.fourth.MainActivity;
 import com.example.investigacion.fourth.R;
-import com.example.investigacion.fourth.adapter.RecycleViewLastUsers;
 import com.example.investigacion.fourth.adapter.RecycleViewSuggestions;
 import com.example.investigacion.fourth.helper.ClassJSONParser;
-import com.example.investigacion.fourth.model.LastUserResponse;
 import com.example.investigacion.fourth.model.Suggestions;
-import com.example.investigacion.fourth.tools.ComRequest;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import org.w3c.dom.Text;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -161,7 +139,7 @@ public class NewUserFragment extends Fragment {
                 new RecycleViewSuggestions.OnItemClickListener() {
                 @Override public void onItemClick(Suggestions.UserCode item) {
                     Toast.makeText(getContext(), "Item Clicked with the code "+item.data, Toast.LENGTH_LONG).show();
-                    mCallback.openFivePicture(item);
+                    mCallback.openFivePicture(item,cookie);
                 }
         });
         rv_list_employee.setAdapter(mAdapter);
@@ -195,7 +173,7 @@ public class NewUserFragment extends Fragment {
 
     public interface OnHeadlineSelectedListener {
 
-        void openFivePicture(Suggestions.UserCode person);
+        void openFivePicture(Suggestions.UserCode person, String cookie);
     }
 
 
