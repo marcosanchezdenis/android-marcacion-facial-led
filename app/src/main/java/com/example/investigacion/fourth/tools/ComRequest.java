@@ -58,16 +58,16 @@ public class ComRequest {
 
             } catch (ProtocolException e) {
                 e.printStackTrace();
-                //  Log.i("error",e.getMessage());
+                Log.i("ComRequest.get error p",e.getMessage());
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
-                //  Log.i("error",e.getMessage());
+                Log.i("ComRequest.get error u",e.getMessage());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
-                //  Log.i("error",e.getMessage());
+                Log.i("ComRequest.get error m",e.getMessage());
             } catch (IOException e) {
                 e.printStackTrace();
-                //Log.i("error",e.getMessage());
+                Log.i("ComRequest.get error i",e.getMessage());
             }
 
             return responsetxt;

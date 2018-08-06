@@ -35,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.WebSocket;
 import okio.ByteString;
 
@@ -126,12 +127,19 @@ public class CameraFragment extends Fragment implements CameraPreview.MarkFaceDe
 
 
         EchoWebSocketListener listener = new EchoWebSocketListener(){
-        @Override
-        public void onMessage(WebSocket webSocket, String text) {
-            output2( text);
-                progress.dismiss();
+            @Override
+            public void onMessage(WebSocket webSocket, String text) {
+                output2( text);
+                    progress.dismiss();
+                }
+
+            @Override
+            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+                super.onFailure(webSocket, t, response);
+               // Messages.waitSendPhoto2Mark(getActivity());
             }
         };
+
         ws = client.newWebSocket(request, listener);
         client.dispatcher().executorService().shutdown();
 
@@ -168,44 +176,53 @@ public class CameraFragment extends Fragment implements CameraPreview.MarkFaceDe
         ((ViewGroup)preview.getParent()).addView(mPreview.mFaceView);
 
 
-
-        //todo verificar respuesta de conexiones
+            LastUserResponse p =null;
+            //todo verificar respuesta de conexiones
         try {
             // todo spot necesita hacer un request get y returna el JSON
-            jsonresponse = new ComRequest.get().execute("http://10.10.25.1/personal/wslistmarcacion.php",null).get();
+            jsonresponse = new ComRequest.get().execute("http://10.10.25.100/personal/wslistmarcacion.php",null).get();
+
+
+            jsonresponse= jsonresponse.substring(1, jsonresponse.length() - 1);
+
+            Gson gson = new GsonBuilder().create();
+            p = gson.fromJson(jsonresponse, LastUserResponse.class);
+
+
+            mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
+            mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+
+
+            mRecyclerView.setHasFixedSize(true);
+
+
+            mLayoutManager = new LinearLayoutManager(getActivity());
+            mRecyclerView.setLayoutManager(mLayoutManager);
+
+
+            mAdapter = new MessagesAdapter(getContext(),p.data);
+            mRecyclerView.setAdapter(mAdapter);
+
+
+
+            Log.i("LastUserResponse ",p.toString() );
         } catch (InterruptedException e) {
             e.printStackTrace();
+            Log.i("LastUserResponse error",e.getMessage());
         } catch (ExecutionException e) {
             e.printStackTrace();
+            Log.i("LastUserResponse error",e.getMessage());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+//            Log.i("LastUserResponse error",e.getMessage());
         }
 
-        jsonresponse= jsonresponse.substring(1, jsonresponse.length() - 1);
-
-        Gson gson = new GsonBuilder().create();
-        LastUserResponse p = gson.fromJson(jsonresponse, LastUserResponse.class);
 
 
 
 
 
-        Log.i("LastUserResponse ",p.toString() );
 
-
-
-
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-
-
-        mRecyclerView.setHasFixedSize(true);
-
-
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-
-        mAdapter = new MessagesAdapter(getContext(),p.data);
-        mRecyclerView.setAdapter(mAdapter);
         return rootView;
 
     }
