@@ -13,6 +13,15 @@ public class ClassJSONParser {
         String jsonresponse = null;
         try {
             jsonresponse = new ComRequest.get().execute(url,cookie).get();
+
+
+            Log.i("RESPUESTA DE JSON", jsonresponse);
+
+            Gson gson = new GsonBuilder().create();
+            Object p = gson.fromJson(jsonresponse, typeClass);
+            return p;
+
+
         } catch (InterruptedException e) {
             e.printStackTrace();
 
@@ -20,12 +29,11 @@ public class ClassJSONParser {
         } catch (ExecutionException e) {
             e.printStackTrace();
             //Log.i("error",e.getMessage());
-        }
-        Log.i("RESPUESTA DE JSON", jsonresponse);
+        } catch (NullPointerException e) {
 
-        Gson gson = new GsonBuilder().create();
-        Object p = gson.fromJson(jsonresponse, typeClass);
-        return p;
+        }
+        return null;
+
 
     }
 }

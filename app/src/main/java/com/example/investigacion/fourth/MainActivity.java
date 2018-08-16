@@ -469,6 +469,7 @@ public class MainActivity extends AppCompatActivity
             try {
                 URL url = new URL(this.url);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(1000);
                 conn.setDoOutput(true);
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");

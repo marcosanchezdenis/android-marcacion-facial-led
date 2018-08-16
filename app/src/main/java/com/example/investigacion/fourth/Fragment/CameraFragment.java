@@ -14,6 +14,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -146,28 +147,22 @@ public class CameraFragment extends Fragment implements CameraPreview.MarkFaceDe
 
 
 
-            mCamera = getCameraInstance();
-
-            Button captureButton = (Button) rootView.findViewById(R.id.button_capture);
 
 
-            captureButton.setOnClickListener(
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    progress = Messages.waitSendPhoto2Mark(getContext());
-                    mCamera.takePicture(null, null, mPicture);
-                }
+        Button captureButton = (Button) rootView.findViewById(R.id.button_capture);
+        captureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progress = Messages.waitSendPhoto2Mark(getContext());
+                mCamera.takePicture(null, null, mPicture);
             }
-    );
+        }
+        );
 
 
 
 
-
-
-
-
+        mCamera = getCameraInstance();
         SurfaceView preview = (SurfaceView) rootView.findViewById(R.id.camera_preview);
         preview.getParent();
         mPreview = new CameraPreview( getActivity(), mCamera,preview,this);
@@ -176,7 +171,7 @@ public class CameraFragment extends Fragment implements CameraPreview.MarkFaceDe
         ((ViewGroup)preview.getParent()).addView(mPreview.mFaceView);
 
 
-            LastUserResponse p =null;
+        LastUserResponse p =null;
             //todo verificar respuesta de conexiones
         try {
             // todo spot necesita hacer un request get y returna el JSON
@@ -205,15 +200,32 @@ public class CameraFragment extends Fragment implements CameraPreview.MarkFaceDe
 
 
 
-            Log.i("LastUserResponse ",p.toString() );
+
         } catch (InterruptedException e) {
             e.printStackTrace();
-            Log.i("LastUserResponse error",e.getMessage());
+
         } catch (ExecutionException e) {
             e.printStackTrace();
-            Log.i("LastUserResponse error",e.getMessage());
+
         } catch (NullPointerException e) {
             e.printStackTrace();
+            TextView reload_text_last_marks =  new TextView(getContext());
+            Button reload_button_last_marks =  new Button(getContext());
+            reload_button_last_marks.setText("Intentar");
+            reload_text_last_marks.setText("No se puede establecer una conexion con el servidor");
+            reload_text_last_marks.setTextSize(20.0f);
+            reload_button_last_marks.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+            LinearLayout last_user_container = rootView.findViewById(R.id.ll_sidebar_last_user);
+            last_user_container.setPadding(20,20,20,20);
+            last_user_container.addView(reload_text_last_marks);
+            last_user_container.addView(reload_button_last_marks    );
+
 //            Log.i("LastUserResponse error",e.getMessage());
         }
 

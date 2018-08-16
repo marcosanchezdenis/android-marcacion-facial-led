@@ -78,12 +78,15 @@ public class NewUserFragment extends Fragment {
         }
         try {
             cookie =  new MainActivity.ReturnCookieSession("http://10.10.25.9:8888/users/login","password=mandrake2505&username=admin").execute().get();
+            Log.i("text-cookie",cookie);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        } catch (NullPointerException e){
+
         }
-        Log.i("text-cookie",cookie);
+
     }
 
     @Override
@@ -99,52 +102,51 @@ public class NewUserFragment extends Fragment {
 
 
 
-
-        p = (Suggestions)ClassJSONParser.json2obj("http://10.10.25.9:8888/users/filter",cookie, Suggestions.class);
-
-
-
-         query_request.addTextChangedListener(new TextWatcher() {
-             @Override
-             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-             }
-
-             @Override
-             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-             }
-
-             @Override
-             public void afterTextChanged(Editable editable) {
+        if(cookie != null) {
+            p = (Suggestions) ClassJSONParser.json2obj("http://10.10.25.9:8888/users/filter", cookie, Suggestions.class);
 
 
-                 p = (Suggestions)ClassJSONParser.json2obj("http://10.10.25.9:8888/users/filter?query="+ editable.toString(),cookie,Suggestions.class);
+            query_request.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                 mAdapter.swap(p.suggestions);
-
-                 mAdapter.notifyDataSetChanged();
-
-
-
-             }
-         });
-        // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        rv_list_employee.setLayoutManager(mLayoutManager);
-
-        // specify an adapter (see also next example)
-        mAdapter = new RecycleViewSuggestions(
-                p.suggestions,
-                new RecycleViewSuggestions.OnItemClickListener() {
-                @Override public void onItemClick(Suggestions.UserCode item) {
-                    Toast.makeText(getContext(), "Item Clicked with the code "+item.data, Toast.LENGTH_LONG).show();
-                    mCallback.openFivePicture(item,cookie);
                 }
-        });
-        rv_list_employee.setAdapter(mAdapter);
-        rv_list_employee.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
 
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+
+                    p = (Suggestions) ClassJSONParser.json2obj("http://10.10.25.9:8888/users/filter?query=" + editable.toString(), cookie, Suggestions.class);
+
+                    mAdapter.swap(p.suggestions);
+
+                    mAdapter.notifyDataSetChanged();
+
+
+                }
+            });
+            // use a linear layout manager
+            mLayoutManager = new LinearLayoutManager(getActivity());
+            rv_list_employee.setLayoutManager(mLayoutManager);
+
+            // specify an adapter (see also next example)
+            mAdapter = new RecycleViewSuggestions(
+                    p.suggestions,
+                    new RecycleViewSuggestions.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(Suggestions.UserCode item) {
+                            Toast.makeText(getContext(), "Item Clicked with the code " + item.data, Toast.LENGTH_LONG).show();
+                            mCallback.openFivePicture(item, cookie);
+                        }
+                    });
+            rv_list_employee.setAdapter(mAdapter);
+            rv_list_employee.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        }
         return v;
     }
 

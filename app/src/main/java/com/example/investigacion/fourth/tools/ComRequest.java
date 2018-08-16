@@ -26,6 +26,7 @@ public class ComRequest {
             try {
                 URL url = new URL(urls[0]);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(1000);
                 // conn.setDoOutput(true);
 
                 //conn.setRequestMethod("POST");
@@ -91,6 +92,7 @@ public class ComRequest {
             try {
                 URL url = new URL(urls[0]);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(1000);
                 conn.setDoOutput(true);
 
                 conn.setRequestMethod("POST");
